@@ -21,8 +21,7 @@
     <div class="mb-3">
         <label for="FechaNacimiento" class="form-label">Fecha de Nacimiento</label>
         <div class="col-md-4">
-            <!-- Utiliza la propiedad Now de DateTime para establecer la fecha actual -->
-            <InputDate class="form-control" @bind-Value="solicitante.FechaNacimiento" ></InputDate>
+            <InputDate class="form-control" @bind-Value="solicitante.FechaNacimiento"></InputDate>
         </div>
         <ValidationMessage For="@(()=>solicitante.FechaNacimiento)" />
     </div>
@@ -123,19 +122,24 @@
             Title = "Editar";
             solicitante = await Http.GetFromJsonAsync<Solicitante>($"api/Solicitantes/ObtenerSolicitantePorId/{IdSolicitante}");
         }
+        else
+        {
+            // Establecer la fecha actual para nuevos solicitantes
+            Title = "Agregar";
+            solicitante = new Solicitante
+                {
+                    FechaNacimiento = DateTime.Now,
+                    FechaExpedicionPasaporte = DateTime.Now,
+                    EstadoCivil = "Soltero",
+                    // Otros campos también pueden inicializarse aquí si es necesario
+                };
+        }
     }
+
 
     // Método para guardar un Solicitante
     protected async Task SaveSolicitante()
     {
-        // Si es una nueva solicitud, establece la fecha de creación y el estado por defecto
-        if (solicitante.IdSolicitante == 0)
-        {
-            solicitante.FechaNacimiento = DateTime.Now;
-            solicitante.FechaExpedicionPasaporte = DateTime.Now;
-            solicitante.EstadoCivil = "Soltero";
-        }
-
         if (solicitante.IdSolicitante != 0)
         {
             // Si el solicitante ya existe, se edita
