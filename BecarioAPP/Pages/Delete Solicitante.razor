@@ -1,0 +1,86 @@
+﻿@page "/solicitante/delete/{IdSolicitante:int}"
+
+<h2>Eliminar Solicitante</h2>
+<br />
+<!--Creamos el formulario de eliminacion-->
+<div class="form-group">
+    <!--Mensaje de seguridad de eliminacion-->
+    <h4>¿Esta seguro que desea eliminar el Solicitante?</h4>
+    <table class="table">
+        <tbody>
+            <!-- Mostramos los datos del solicitante -->
+            <tr>
+                <td>Nombre Completo</td>
+                <td>@solicitante.NombreCompleto</td>
+            </tr>
+            <tr>
+                <td>Fecha de Nacimiento</td>
+                <td>@solicitante.FechaNacimiento.ToShortDateString()</td> <!-- Ajusta el formato según tus necesidades -->
+            </tr>
+            <tr>
+                <td>Estado Civil</td>
+                <td>@solicitante.EstadoCivil</td>
+            </tr>
+            <tr>
+                <td>DUI</td>
+                <td>@solicitante.Dui</td>
+            </tr>
+            <tr>
+                <td>Pasaporte</td>
+                <td>@solicitante.Pasaporte</td>
+            </tr>
+            <tr>
+                <td>Fecha de Expedición del Pasaporte</td>
+                <td>@solicitante.FechaExpedicionPasaporte.ToShortDateString()</td> <!-- Ajusta el formato según tus necesidades -->
+            </tr>
+            <tr>
+                <td>Lugar de Expedición</td>
+                <td>@solicitante.LugardeExpedicion</td>
+            </tr>
+            <tr>
+                <td>Dirección</td>
+                <td>@solicitante.Direccion</td>
+            </tr>
+            <tr>
+                <td>Email</td>
+                <td>@solicitante.Email</td>
+            </tr>
+            <tr>
+                <td>Teléfono</td>
+                <td>@solicitante.Telefono</td>
+            </tr>
+
+           
+        </tbody>
+    </table>
+</div>
+<!--Botones para eliminar y cancelar-->
+<div class="form-group">
+    <button type="submit" class="btn btn-danger" @onclick="(async () => await RemoveSolicitante(IdSolicitante))">Eliminar</button>
+    <button type="button" class="btn btn-warning" @onclick="Cancel">Cancelar</button>
+</div>
+
+@code {
+    [Parameter]
+    public int IdSolicitante { get; set; }
+    Solicitante? solicitante = new Solicitante();
+
+    // Cargamos los datos del solicitante al inicializar la página
+    protected override async Task OnInitializedAsync()
+    {
+        solicitante = await Http.GetFromJsonAsync<Solicitante>($"api/Solicitantes/ObtenerSolicitantePorId/{IdSolicitante}");
+    }
+
+    // Método para eliminar el solicitante
+    protected async Task RemoveSolicitante(int IdSolicitante)
+    {
+        await Http.DeleteAsync($"/api/Solicitantes/EliminarSolicitante/{IdSolicitante}");
+        navigationManager.NavigateTo("/solicitante");
+    }
+
+    // Método para cancelar la eliminación del solicitante
+    protected void Cancel()
+    {
+        navigationManager.NavigateTo("/solicitante");
+    }
+}
