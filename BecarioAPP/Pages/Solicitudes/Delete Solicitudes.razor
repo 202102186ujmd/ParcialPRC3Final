@@ -1,0 +1,58 @@
+﻿@page "/solicitudes/delete/{id:int}"
+
+<h2>Eliminar Solicitante</h2>
+<br />
+<!--Creamos el formulario de eliminacion-->
+<div class="form-group">
+    <!--Mensaje de seguridad de eliminacion-->
+    <h4>¿Esta seguro que desea eliminar el Solicitante?</h4>
+    <table class="table">
+        <tbody>
+            <!-- Mostramos los datos del solicitante -->
+            <tr>
+                <td>SolicitanteID</td>
+                <td>@solicitud.IdSolicitante</td>
+            </tr>
+            <tr>
+                <td>Fecha de Creacion</td>
+                <td>@solicitud.FechadeCreacion.ToShortDateString()</td> <!-- Ajusta el formato según tus necesidades -->
+            </tr>
+            <tr>
+                <td>Estado</td>
+                <td>@solicitud.IdEstado</td>
+            </tr>
+            
+           
+        </tbody>
+    </table>
+</div>
+<!--Botones para eliminar y cancelar-->
+<div class="form-group">
+    <button type="submit" class="btn btn-danger" @onclick="(async () => await RemoveSolicitud(id))">Eliminar</button>
+    <button type="button" class="btn btn-warning" @onclick="Cancel">Cancelar</button>
+</div>
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+    Solicitud solicitud = new Solicitud();
+
+    // Cargamos los datos de la solicitud al inicializar la página
+    protected override async Task OnInitializedAsync()
+    {
+        solicitud = await Http.GetFromJsonAsync<Solicitud>($"api/Solicitud/ObtenerSolicitud/{id}");
+    }
+
+    // Método para eliminar el solicitante
+    protected async Task RemoveSolicitud(int IdSolicitante)
+    {
+        await Http.DeleteAsync($"/api/Solicitud/EliminarSolicitud/{id}");
+        navigationManager.NavigateTo("/solicitudes");
+    }
+
+    // Método para cancelar la eliminación de la solicitud
+    protected void Cancel()
+    {
+        navigationManager.NavigateTo("/solicitudes");
+    }
+}

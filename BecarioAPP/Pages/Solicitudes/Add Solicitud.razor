@@ -1,0 +1,86 @@
+﻿@page "/solicitud/addsolicitud"
+@page "/solicitud/edit/{id:int}"
+
+<h1>@Title Solicitud</h1>
+<hr />
+
+<!-- Creamos el formulario de edición -->
+<EditForm Model="@solicitud" OnValidSubmit="SaveSolicitud">
+
+    <DataAnnotationsValidator />
+
+    <!-- Controles para introducir los valores de la solicitud -->
+    <div class="mb-3">
+        <label for="IdSolicitante" class="form-label">Solicitante</label>
+        <div class="col-md-4">
+            <!-- Usa InputNumber si IdSolicitante es de tipo numérico -->
+            <InputNumber class="form-control" @bind-Value="solicitud.IdSolicitante"></InputNumber>
+        </div>
+        <ValidationMessage For="@(()=>solicitud.IdSolicitante)" />
+    </div>
+
+    <div class="mb-3">
+        <label for="FechadeCreacion" class="form-label">Fecha de Creación</label>
+        <div class="col-md-4">
+            <InputDate class="form-control" @bind-Value="solicitud.FechadeCreacion"></InputDate>
+        </div>
+        <ValidationMessage For="@(()=>solicitud.FechadeCreacion)" />
+    </div>
+
+    <div class="mb-3">
+        <label for="IdEstado" class="form-label">Estado</label>
+        <div class="col-md-4">
+            <!-- Usa InputNumber si IdEstado es de tipo numérico -->
+            <InputNumber class="form-control" @bind-Value="solicitud.IdEstado"></InputNumber>
+        </div>
+        <ValidationMessage For="@(()=>solicitud.IdEstado)" />
+    </div>
+
+    <!-- Botones para guardar y cancelar -->
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <button type="button" class="btn btn-secondary" @onclick="Cancel">Cancelar</button>
+    </div>
+
+</EditForm>
+
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+    public string Title { get; set; } = "Agregar";
+    public Solicitud solicitud { get; set; } = new Solicitud();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (id != 0)
+        {
+            Title = "Editar";
+            solicitud = await Http.GetFromJsonAsync<Solicitud>($"api/Solicitud/ObtenerSolicitud/{id}");
+        }
+    }
+
+    // Método para guardar una solicitud
+    protected async Task SaveSolicitud()
+    {
+        
+
+        if (solicitud.IdSolicitud != 0)
+        {
+            // Si la solicitud ya existe, se edita
+            await Http.PutAsJsonAsync("api/Solicitud/ActualizarSolicitud" + solicitud.IdSolicitud, solicitud);
+        }
+        else
+        {
+            // Si la solicitud no existe, se agrega
+            await Http.PostAsJsonAsync("api/Solicitud/AgragarSolicitud", solicitud);
+        }
+        // Redirecciona a la página de Solicitudes
+        navigationManager.NavigateTo("/solicitud");
+    }
+
+    protected void Cancel()
+    {
+        navigationManager.NavigateTo("/solicitudes");
+    }
+}

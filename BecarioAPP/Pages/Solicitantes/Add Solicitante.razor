@@ -1,7 +1,7 @@
 ﻿@page "/solicitante/addsolicitante"
 @page "/solicitante/edit/{IdSolicitante:int}"
 
-<h1>@Title Usuario</h1>
+<h1>@Title Solicitantes</h1>
 <hr />
 <!--Creamos el formulario de edicion-->
 <EditForm Model="@solicitante" OnValidSubmit="SaveSolicitante">
@@ -10,18 +10,19 @@
 
     <!--Controles para introducir los valores Nombre-->
     <div class="mb-3">
-        <label for="Name" class="form-label">Nombre Completo</label>
+        <label for="Nombre Compelto" class="form-label">Nombre Completo</label>
         <div class="col-md-4">
             <InputText class="form-control" @bind-Value="solicitante.NombreCompleto"> </InputText>
         </div>
         <ValidationMessage For="@(()=>solicitante.NombreCompleto)" /> <!--Validacion de los datos-->
     </div>
 
-    <!-- Fecha de Nacimiento -->
+   <!-- Fecha de Nacimiento -->
     <div class="mb-3">
         <label for="FechaNacimiento" class="form-label">Fecha de Nacimiento</label>
         <div class="col-md-4">
-            <InputDate class="form-control" @bind-Value="solicitante.FechaNacimiento"></InputDate>
+            <!-- Utiliza la propiedad Now de DateTime para establecer la fecha actual -->
+            <InputDate class="form-control" @bind-Value="solicitante.FechaNacimiento" ></InputDate>
         </div>
         <ValidationMessage For="@(()=>solicitante.FechaNacimiento)" />
     </div>
@@ -127,6 +128,14 @@
     // Método para guardar un Solicitante
     protected async Task SaveSolicitante()
     {
+        // Si es una nueva solicitud, establece la fecha de creación y el estado por defecto
+        if (solicitante.IdSolicitante == 0)
+        {
+            solicitante.FechaNacimiento = DateTime.Now;
+            solicitante.FechaExpedicionPasaporte = DateTime.Now;
+            solicitante.EstadoCivil = "Soltero";
+        }
+
         if (solicitante.IdSolicitante != 0)
         {
             // Si el solicitante ya existe, se edita

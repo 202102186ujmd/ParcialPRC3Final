@@ -1,0 +1,114 @@
+﻿@page "/solicitudes"
+<h1>Solicitudes Detalle</h1>
+<p>Mantenimiento de Solicitudes</p>
+<div class="row">
+    <div class="col-md-6">
+        <a href="/solicitud/addsolicitud" class="btn btn-primary" role="button">
+            <i class="fas fa-user-plus"></i>
+            Agregar Solicitud
+        </a>
+    </div>
+    <br />
+    <!--Campo de busqueda-->
+    <div class="input-group col">
+        <input type="text" class="form-control" placeholder="Buscar por nombre"
+               @bind="SearchString" @bind:event="oninput" @onkeyup="FilterSolicitud" />
+
+        <!-- Boton para limpiar el campo de busqueda -->
+        @if (!string.IsNullOrEmpty(SearchString))
+        {
+            <div class="input-group-append">
+                <button class="btn btn-danger" @onclick="ResetSearch">
+                    <i class="fas fa-times"></i> Limpiar
+                </button>
+            </div>
+        }
+    </div>
+</div>
+<br />
+<!--Mensaje de Carga de los datos-->
+@if (solicitudeList == null)
+{
+    <p><em>Cargando...</em></p>
+}
+else
+{
+    <!--Tabla de usuarios-->
+    <table class="table table-striped align=middle table=bordered">
+        <!--Encabezado de la tabla-->
+        <thead class="table-success">
+            <tr>
+                <th>IdSolicitud</th>
+                <th>IdSolicitante</th>
+                <th>FechadeCreacion</th>
+                <th>IdEstado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var solicitud in solicitudeList)
+            {
+                <!--Cuerpo o campos de datos que contendra la tabla de la tabla-->
+                <tr>
+                    <td>@solicitud.IdSolicitud</td>
+                    <td>@solicitud.IdSolicitante</td>
+                    <td>@solicitud.FechadeCreacion</td>
+                    <td>@solicitud.IdEstado</td>
+                    <!--Botones para editar y eliminar-->
+                    <td>
+                        <a href="/solicitud/edit/@solicitud.IdSolicitud" class="btn btn-outline-dark" role="button">
+                            Editar
+                        </a>
+                        <a href="/solicitudes/delete/@solicitud.IdSolicitud" class="btn btn-outline-dark" role="button">
+                            Eliminar
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+    List<Solicitud>? solicitudeList = new List<Solicitud>();
+    List<Solicitud>? searchData = new List<Solicitud>();
+    Solicitud solicitud = new Solicitud();
+    string SearchString { get; set; } = string.Empty;
+
+    //Metodo para obtener las solicitudes y cargarlos en la tabla
+    protected override async Task OnInitializedAsync()
+    {
+        await GetSolicitudes();
+    }
+
+    //Metodo para obtener las solicitudes
+    protected async Task GetSolicitudes()
+    {
+        solicitudeList = await Http.GetFromJsonAsync<List<Solicitud>>("api/Solicitud/ObtenerSolicitudes");
+        searchData = solicitudeList;
+    }
+
+    //Metodo para filtrar las solicitudes
+    protected void FilterSolicitud()
+    {
+        if (!string.IsNullOrEmpty(SearchString))
+        {
+            //Filtrar por Fecha de Creacion
+            if (DateTime.TryParse(SearchString, out DateTime date))
+            {
+                searchData = solicitudeList.Where(s => s.FechadeCreacion.Date == date.Date).ToList();
+            }
+        }
+        else
+        {
+            solicitudeList = searchData;
+        }
+    }
+    //Metodo para limpiar el campo de busqueda
+    protected void ResetSearch()
+    {
+        SearchString = string.Empty;
+        FilterSolicitud();
+    }
+}
