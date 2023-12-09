@@ -51,12 +51,18 @@
     public string Title { get; set; } = "Agregar";
     public Solicitud solicitud { get; set; } = new Solicitud();
 
+
     protected override async Task OnInitializedAsync()
     {
         if (id != 0)
         {
             Title = "Editar";
             solicitud = await Http.GetFromJsonAsync<Solicitud>($"api/Solicitud/ObtenerSolicitud/{id}");
+        }
+        else
+        {
+            Title = "Agregar";
+            solicitud.FechadeCreacion = DateTime.Now;
         }
     }
 
