@@ -1,4 +1,5 @@
-﻿using BecarioAPI.Models.Interfaces;
+﻿using BecarioAPI.Authorization;
+using BecarioAPI.Models.Interfaces;
 using Becas.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +22,7 @@ namespace BecarioAPI.Controllers
         }
         #endregion
 
+        
         [HttpGet("ObetenesTodosSolicitantes")]
         public ActionResult GetSolicitantes()
         {
@@ -41,6 +43,7 @@ namespace BecarioAPI.Controllers
             }
         }
 
+        
         [HttpGet("ObtenerSolicitantePorId/{id}")]
         public ActionResult GetSolicitanteById(int id)
         {

@@ -1,0 +1,121 @@
+﻿@page "/solicitante"
+<h1>Solicitantes Detalle</h1>
+<p>Mantenimiento de Solicitantes</p>
+<div class="row">
+    <div class="col-md-6">
+        <a href="/solicitante/addsolicitante" class="btn btn-primary" role="button">
+            <i class="fas fa-user-plus"></i>
+            Agregar Solicitante
+        </a>
+    </div>
+    <br />
+    <!--Campo de busqueda-->
+    <div class="input-group col">
+        <input type="text" class="form-control" placeholder="Buscar por nombre"
+               @bind="SearchString" @bind:event="oninput" @onkeyup="FilterSolicitante" />
+
+        <!-- Boton para limpiar el campo de busqueda -->
+        @if (!string.IsNullOrEmpty(SearchString))
+        {
+            <div class="input-group-append">
+                <button class="btn btn-danger" @onclick="ResetSearch">
+                    <i class="fas fa-times"></i> Limpiar
+                </button>
+            </div>
+        }
+    </div>
+</div>
+<br />
+<!--Mensaje de Carga de los datos-->
+@if (solicitantesList == null)
+{
+    <p><em>Cargando...</em>></p>
+}
+else
+{
+    <!--Tabla de usuarios-->
+    <table class="table table-striped align=middle table=bordered">
+        <!--Encabezado de la tabla-->
+        <thead class="table-success">
+            <tr>
+                <th>IdSolicitante</th>
+                <th>NombreCompleto</th>
+                <th>FechaNacimiento</th>
+                <th>EstadoCivil</th>
+                <th>Pasaporte</th>
+                <th>LugardeExpedicion</th>
+                <th>Direccion</th>
+                <th>Email</th>
+                <th>Telefono</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var solic in solicitantesList)
+            {
+                <!--Cuerpo o campos de datos que contendra la tabla de la tabla-->
+                <tr>
+                    <td>@solic.IdSolicitante</td>
+                    <td>@solic.NombreCompleto</td>
+                    <td>@solic.FechaNacimiento</td>
+                    <td>@solic.EstadoCivil</td>
+                    <td>@solic.Pasaporte</td>
+                    <td>@solic.LugardeExpedicion</td>
+                    <td>@solic.Direccion</td>
+                    <td>@solic.Email</td>
+                    <td>@solic.Telefono</td>
+                    <!--Botones para editar y eliminar-->
+                    <td>
+                        <a href="/solicitante/edit/@solic.IdSolicitante" class="btn btn-outline-dark" role="button">
+                            Editar
+                        </a>
+                        <a href="/user/delete/@solic.IdSolicitante" class="btn btn-outline-dark" role="button">
+                            Eliminar
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+
+@code {
+    List<Solicitante>? solicitantesList = new List<Solicitante>();
+    List<Solicitante>? searchData = new List<Solicitante>();
+    Solicitante solicitante = new Solicitante();
+    string SearchString { get; set; } = string.Empty;
+
+    //Metodo para obtener los Solicitantes y cargarlos en la tabla
+    protected override async Task OnInitializedAsync()
+    {
+        await GetSolicitantes();
+    }
+
+    //Metodo para obtener los Solicitantes
+    protected async Task GetSolicitantes()
+    {
+        solicitantesList = await Http.GetFromJsonAsync<List<Solicitante>>("api/Solicitantes/ObetenesTodosSolicitantes");
+        searchData = solicitantesList;
+    }
+
+    //Metodo para filtrar los Solicitantes
+    protected void FilterSolicitante()
+    {
+        if (!string.IsNullOrEmpty(SearchString))
+        {
+            solicitantesList = searchData
+            .Where(x => x.NombreCompleto.Contains(SearchString, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+        else
+        {
+            solicitantesList = searchData;
+        }
+    }
+    //Metodo para limpiar el campo de busqueda
+    protected void ResetSearch()
+    {
+        SearchString = string.Empty;
+        FilterSolicitante();
+    }
+}

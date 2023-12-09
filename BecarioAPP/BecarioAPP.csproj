@@ -6,4 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Becas.Shared\Becas.Shared.csproj" />
+  </ItemGroup>
+
 </Project>

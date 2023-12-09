@@ -1,0 +1,150 @@
+﻿@page "/solicitante/addsolicitante"
+@page "/solicitante/edit/{IdSolicitante:int}"
+
+<h1>@Title Usuario</h1>
+<hr />
+<!--Creamos el formulario de edicion-->
+<EditForm Model="@solicitante" OnValidSubmit="SaveSolicitante">
+
+    <DataAnnotationsValidator />
+
+    <!--Controles para introducir los valores Nombre-->
+    <div class="mb-3">
+        <label for="Name" class="form-label">Nombre Completo</label>
+        <div class="col-md-4">
+            <InputText class="form-control" @bind-Value="solicitante.NombreCompleto"> </InputText>
+        </div>
+        <ValidationMessage For="@(()=>solicitante.NombreCompleto)" /> <!--Validacion de los datos-->
+    </div>
+
+    <!-- Fecha de Nacimiento -->
+    <div class="mb-3">
+        <label for="FechaNacimiento" class="form-label">Fecha de Nacimiento</label>
+        <div class="col-md-4">
+            <InputDate class="form-control" @bind-Value="solicitante.FechaNacimiento"></InputDate>
+        </div>
+        <ValidationMessage For="@(()=>solicitante.FechaNacimiento)" />
+    </div>
+
+    <!-- Estado Civil -->
+    <div class="mb-3">
+        <label for="EstadoCivil" class="form-label">Estado Civil</label>
+        <div class="col-md-4">
+            <InputText class="form-control" @bind-Value="solicitante.EstadoCivil"></InputText>
+        </div>
+        <ValidationMessage For="@(()=>solicitante.EstadoCivil)" />
+    </div>
+
+    <!-- DUI -->
+    <div class="mb-3">
+        <label for="Dui" class="form-label">DUI</label>
+        <div class="col-md-4">
+            <InputText class="form-control" @bind-Value="solicitante.Dui"></InputText>
+        </div>
+        <ValidationMessage For="@(()=>solicitante.Dui)" />
+    </div>
+
+    <!-- Pasaporte -->
+    <div class="mb-3">
+        <label for="Pasaporte" class="form-label">Pasaporte</label>
+        <div class="col-md-4">
+            <InputText class="form-control" @bind-Value="solicitante.Pasaporte"></InputText>
+        </div>
+        <ValidationMessage For="@(()=>solicitante.Pasaporte)" />
+    </div>
+
+    <!-- Fecha de Expedición del Pasaporte -->
+    <div class="mb-3">
+        <label for="FechaExpedicionPasaporte" class="form-label">Fecha de Expedición del Pasaporte</label>
+        <div class="col-md-4">
+            <InputDate class="form-control" @bind-Value="solicitante.FechaExpedicionPasaporte"></InputDate>
+        </div>
+        <ValidationMessage For="@(()=>solicitante.FechaExpedicionPasaporte)" />
+    </div>
+
+    <!-- Lugar de Expedición -->
+    <div class="mb-3">
+        <label for="LugardeExpedicion" class="form-label">Lugar de Expedición del Pasaporte</label>
+        <div class="col-md-4">
+            <InputText class="form-control" @bind-Value="solicitante.LugardeExpedicion"></InputText>
+        </div>
+        <ValidationMessage For="@(()=>solicitante.LugardeExpedicion)" />
+    </div>
+
+    <!-- Dirección -->
+    <div class="mb-3">
+        <label for="Direccion" class="form-label">Dirección</label>
+        <div class="col-md-4">
+            <InputText class="form-control" @bind-Value="solicitante.Direccion"></InputText>
+        </div>
+        <ValidationMessage For="@(()=>solicitante.Direccion)" />
+    </div>
+
+    <!-- Email -->
+    <div class="mb-3">
+        <label for="Email" class="form-label">Email</label>
+        <div class="col-md-4">
+            <InputText class="form-control" @bind-Value="solicitante.Email"></InputText>
+        </div>
+        <ValidationMessage For="@(()=>solicitante.Email)" />
+    </div>
+
+    <!-- Teléfono -->
+    <div class="mb-3">
+        <label for="Telefono" class="form-label">Teléfono</label>
+        <div class="col-md-4">
+            <InputText class="form-control" @bind-Value="solicitante.Telefono"></InputText>
+        </div>
+        <ValidationMessage For="@(()=>solicitante.Telefono)" />
+    </div>
+
+   
+
+    <!--Botones para guardar y cancelar-->
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <button type="button" class="btn btn-secondary" @onclick="Cancel">Cancelar</button>
+    </div>
+
+</EditForm>
+
+@code {
+    [Parameter]
+    public int? IdSolicitante { get; set; }
+    protected string Title = "Agregar";
+    protected Solicitante? solicitante = new Solicitante();
+
+    // Método para agregar o editar un Solicitante
+    protected override async Task OnParametersSetAsync()
+    {
+        if (IdSolicitante != null)
+        {
+            Title = "Editar";
+            solicitante = await Http.GetFromJsonAsync<Solicitante>($"api/Solicitantes/ObtenerSolicitantePorId/{IdSolicitante}");
+        }
+    }
+
+    // Método para guardar un Solicitante
+    protected async Task SaveSolicitante()
+    {
+        if (solicitante.IdSolicitante != 0)
+        {
+            // Si el solicitante ya existe, se edita
+            await Http.PutAsJsonAsync($"api/Solicitantes/ActualizarSolicitante/{solicitante.IdSolicitante}", solicitante);
+        }
+        else
+        {
+            // Si el solicitante no existe, se agrega
+            await Http.PostAsJsonAsync("api/Solicitantes/AgregarSolicitante", solicitante);
+        }
+
+        // Redirecciona a la página de Solicitantes
+        Cancel();
+    }
+
+    // Método para cancelar la acción
+    protected void Cancel()
+    {
+        navigationManager.NavigateTo("/solicitante");
+    }
+}

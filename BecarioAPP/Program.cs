@@ -8,6 +8,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
+// agregar el servicio de httpclient que contendra la url del api y la configuracion de la misma
+builder.Services.AddHttpClient("", options =>
+{
+    options.BaseAddress = new Uri(builder.Configuration.GetSection("UrlData").GetValue<string>("BaseAddressURL"));
+});
 
 var app = builder.Build();
 
