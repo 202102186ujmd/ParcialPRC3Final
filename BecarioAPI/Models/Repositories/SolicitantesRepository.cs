@@ -1,5 +1,6 @@
 ﻿using BecarioAPI.Models.Interfaces;
 using Becas.Shared;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace BecarioAPI.Models.Repositories
@@ -128,8 +129,15 @@ namespace BecarioAPI.Models.Repositories
                     //Guardar cambios
                     _db.Entry(solicitanteExistente).State = EntityState.Modified;
                     _db.SaveChanges();
+                    //Devolver mensaje de exito
+                    
                 }
-                throw new Exception("El solicitante no existe");
+                else
+                {
+                    //si no existe, lanzar excepcion
+                    throw new Exception("El solicitante no existe");
+                }
+
             }
             catch (System.Exception ex)
             {

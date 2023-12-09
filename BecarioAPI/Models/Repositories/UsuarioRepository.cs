@@ -19,12 +19,6 @@ namespace BecarioAPI.Models.Repositories
         {
             try
             {
-                //Validar que el usuario no exista
-                var usuarioExistente = _db.Usuarios.FirstOrDefault(u => u.Email == usuario.Email);
-                if (usuarioExistente != null)
-                {
-                    throw new Exception("El usuario ya existe");
-                }
                 //agregar usuario
                 _db.Usuarios.Add(usuario);
                 _db.SaveChanges();
