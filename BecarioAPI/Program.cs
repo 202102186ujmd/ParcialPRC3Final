@@ -1,23 +1,61 @@
-var builder = WebApplication.CreateBuilder(args);
+using BecarioAPI.Models;
+using BecarioAPI.Models.Interfaces;
+using BecarioAPI.Models.Repositories;
+using Microsoft.EntityFrameworkCore;
+using NLog;
+using NLog.Web;
 
-// Add services to the container.
+#region Nlog Service
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+var logger = LogManager.Setup().
+    LoadConfigurationFromAppSettings().
+    GetCurrentClassLogger();
 
-var app = builder.Build();
+logger.Debug("Init main");
+#endregion
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+try
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    var builder = WebApplication.CreateBuilder(args);
+
+    // Add services to the container.
+
+    builder.Services.AddControllers();
+    // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen();
+    //REgistramos la conexion a la base de datos
+    builder.Services.AddDbContext<BecarioDBContext>(options =>
+    {
+        options.UseSqlServer(builder.Configuration.GetConnectionString("BecarioconectionDb"));
+    });
+    //Agregamos las dependencias 
+    builder.Services.AddScoped<ISolicitudesRepository, SolicitudesRepository>();
+    builder.Services.AddScoped<ISolicitantesRepository, SolicitantesRepository>();
+    builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+
+    var app = builder.Build();
+
+    // Configure the HTTP request pipeline.
+    if (app.Environment.IsDevelopment())
+    {
+        app.UseSwagger();
+        app.UseSwaggerUI();
+    }
+
+    app.UseAuthorization();
+
+    app.MapControllers();
+
+    app.Run();
+
 }
-
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();
+catch (Exception ex)
+{
+    logger.Error(ex, "Error en la aplicación");
+    throw;
+}
+finally
+{
+    LogManager.Shutdown();
+}

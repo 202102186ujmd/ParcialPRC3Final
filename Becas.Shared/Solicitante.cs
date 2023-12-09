@@ -49,14 +49,7 @@ namespace Becas.Shared
 
         [Required]
         [StringLength(150, MinimumLength = 5, ErrorMessage = "El nombre no cumple los requerimientos")]
-       
-        public string? Nombre { get; set; }
-
-        [Required]
-        [StringLength(150, MinimumLength = 5, ErrorMessage = "El Apellido no cumple los requerimientos")]
-
-        public string? Apellido { get; set; }
-
+        public string? NombreCompleto { get; set; }
         [Required]
         [FechaFuturaValida(ErrorMessage = "La fecha de nacimiento no puede estar en el futuro.")]
         public DateTime FechaNacimiento { get; set; }

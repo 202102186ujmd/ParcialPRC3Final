@@ -1,4 +1,4 @@
-namespace BecarioAPI
+namespace BecarioAPP.Data
 {
     public class WeatherForecast
     {

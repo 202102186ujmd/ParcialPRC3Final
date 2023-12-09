@@ -10,7 +10,7 @@ namespace Becas.Shared
         //agregamos la contraseña con tipo de datos varbinary
         [Required]
         [MinLength(8)] //minimo 8 caracteres
-        public byte[] Contrasena { get; set; }
+        public string Contrasena { get; set; }
         [Required]
         //agregamos la restricion de tipo de usuario 1: administrador, 2: Becario
         [StringLength(1)]

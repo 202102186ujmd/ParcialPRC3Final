@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Becas.Shared", "Becas.Share
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BecarioAPI", "BecarioAPI\BecarioAPI.csproj", "{4D7C1D7F-65FB-4AB7-8D95-0D4EBBB147FF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BecarioAPP", "BecarioAPP\BecarioAPP.csproj", "{2A7163C4-B8F3-4223-BCD8-31D726FAF11A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{4D7C1D7F-65FB-4AB7-8D95-0D4EBBB147FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4D7C1D7F-65FB-4AB7-8D95-0D4EBBB147FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4D7C1D7F-65FB-4AB7-8D95-0D4EBBB147FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A7163C4-B8F3-4223-BCD8-31D726FAF11A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A7163C4-B8F3-4223-BCD8-31D726FAF11A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A7163C4-B8F3-4223-BCD8-31D726FAF11A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A7163C4-B8F3-4223-BCD8-31D726FAF11A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
